@@ -18,7 +18,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: $(yq e '.lambda.env.runtime' config.yml)
+          python-version: '$(yq e ".lambda.env.runtime" config.yml)'
 
       - name: Install Dependencies
         run: pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
