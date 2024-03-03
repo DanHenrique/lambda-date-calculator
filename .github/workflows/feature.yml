@@ -25,7 +25,9 @@ jobs:
           python-version: ${{ steps.read-config.outputs.python-version }}
 
       - name: Install Dependencies
-        run: pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
+        run: |
+          pip install pytest
+          pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
 
       - name: Run Unit Tests
         run: pytest lambda/$(yq e '.lambda.tests.basepath' config.yml)
