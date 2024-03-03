@@ -1,0 +1,35 @@
+name: Featue Workflow
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'feature-*'
+      - 'feature_*'
+
+jobs:
+  build-and-test-and-open-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: $(yq e '.lambda.env.runtime' config.yml)
+
+      - name: Install Dependencies
+        run: pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
+
+      - name: Run Unit Tests
+        run: pytest lambda/$(yq e '.lambda.tests.basepath' config.yml)
+
+      - name: Open Pull Request to develop
+        run: gh pr create -B develop -H ${{ github.ref }} --title 'Merge branch_to_merge into develop' --body 'Created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Run Tests
+      #   uses: ./.github/actions/run-tests.yml

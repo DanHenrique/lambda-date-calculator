@@ -1,0 +1,7 @@
+# .github/actions/run-tests.yml
+name: Run Tests
+
+runs:
+  using: 'composite'
+  steps:
+    - run: pytest
