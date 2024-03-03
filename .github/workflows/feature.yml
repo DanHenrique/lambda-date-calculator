@@ -30,7 +30,7 @@ jobs:
           pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
 
       - name: Run Unit Tests
-        run: pytest lambda/$(yq e '.lambda.tests.basepath' config.yml)
+        run: pytest $(yq e '.lambda.tests.basepath' config.yml)
 
       - name: Open Pull Request to develop
         run: gh pr create -B develop -H ${{ github.ref }} --title 'Merge branch_to_merge into develop' --body 'Created by Github action'
