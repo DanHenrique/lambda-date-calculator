@@ -12,13 +12,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Read config
+        id: read-config
+        run: echo "::set-output name=python-version::$(cat config.yml | shyaml get-value lambda.env.runtime)"
+
       - name: Checkout Repository
         uses: actions/checkout@v2
 
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '$(yq e ".lambda.env.runtime" config.yml)'
+          python-version: ${{ steps.read-config.outputs.python-version }}
 
       - name: Install Dependencies
         run: pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
