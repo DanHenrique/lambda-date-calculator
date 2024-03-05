@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
       - name: Read config
         id: read-config
         run: |
           echo "python-version=$(yq e '.lambda.env.runtime' config.yml)" >> $GITHUB_OUTPUT
           echo "requirements-file=$(yq e '.lambda.tests.requirements_file' config.yml)" >> $GITHUB_OUTPUT
           echo "base-path=$(yq e '.lambda.tests.directory' config.yml)" >> $GITHUB_OUTPUT
-
-      - name: Checkout Repository
-        uses: actions/checkout@v2
 
       - name: Setup Python
         uses: actions/setup-python@v2
