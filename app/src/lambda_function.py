@@ -1,5 +1,5 @@
 import json
-from app.src.util.date_utils import convert_date
+from src.util.date_utils import convert_date
 
 
 def lambda_handler(event, context):
