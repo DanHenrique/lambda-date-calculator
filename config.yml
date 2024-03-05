@@ -2,7 +2,7 @@ lambda:
   env:
     runtime: 3.11
   tests:
-    basepath: lambda
+    directory: app
     requirements_file: requirements-dev.txt
 
 

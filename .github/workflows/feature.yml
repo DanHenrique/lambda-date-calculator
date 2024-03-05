@@ -14,7 +14,10 @@ jobs:
     steps:
       - name: Read config
         id: read-config
-        run: echo "::set-output name=python-version::$(cat config.yml | shyaml get-value lambda.env.runtime)"
+        run: |
+          echo "::set-output name=python-version::$(yq e '.lambda.env.runtime' config.yml)"
+          echo "::set-output name=requirements-file::$(yq e '.lambda.tests.requirements_file' config.yml)"
+          echo "::set-output name=base-path::$(yq e '.lambda.tests.directory' config.yml)"
 
       - name: Checkout Repository
         uses: actions/checkout@v2
@@ -26,14 +29,15 @@ jobs:
 
       - name: Install Dependencies
         run: |
+          cd ${{ steps.read-config.outputs.base-path }}
           pip install pytest
-          pip install -r lambda/$(yq e '.lambda.tests.requirements_file' config.yml)
+          pip install -r ${{ steps.read-config.outputs.requirements-file }}
 
       - name: Run Unit Tests
-        run: pytest $(yq e '.lambda.tests.basepath' config.yml)
+        run: pytest ${{ steps.read-config.outputs.base-path }}
 
       - name: Open Pull Request to develop
-        run: gh pr create -B develop -H ${{ github.ref }} --title 'Merge branch_to_merge into develop' --body 'Created by Github action'
+        run: gh pr create -B develop -H ${{ github.ref }} --title 'Automatically created Pull Request' --body 'Created by Github action'
         env:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
