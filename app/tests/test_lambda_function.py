@@ -1,7 +1,7 @@
 # test_lambda_function.py
 import json
 import unittest
-from app.src.lambda_function import lambda_handler
+from src.lambda_function import lambda_handler
 
 
 class TestLambdaHandler(unittest.TestCase):
