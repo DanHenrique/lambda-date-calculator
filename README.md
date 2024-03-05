@@ -1,98 +1,74 @@
 # lambda-date-calculator
 
-## Feature
+This Lambda function receives an object with date properties and formats the date into a desired format. The result can be returned as a JSON object or as a string.
 
-Crie uma pipeline github actions para uma função lambda em python que siga as seguintes regras:
+## Usage
 
-1. Se houver algum commit realizado em branches que se iniciam com "feature/" ou "feature-", serão executados o build da função e também os testes unitarios.
-2. Se houver sucesso no build e testes unitarios, sera aberto um Pull Request automaticamente para a branch develop
+### Requirements
 
-Separe o build da abertura de Pull Request.
-O diretório raiz(root directory) dos testes deve ser parametrizado em um arquivo config.yml na raiz do repositório
-O arquivo que será utilizado para dependencias dos testes, requirements, deve ser parametrizado no config.yml
+- AWS Lambda
+- Python 3.x
 
-## Develop
+### Input
 
+The Lambda function expects to receive a JSON object with the following structure:
 
+```json
+{
+  "date": "string",
+  "desired_format": "string",
+  "return_format": "string"
+}
+```
 
-## Release
+- `date` (string): The date you want to format.
+- `desired_format` (string): The desired format for the date, following the syntax of the `datetime` library in Python.
+- `return_format` (string): The format in which the result should be returned. Only accepts the options "json" or "dumps".
 
-## Main
+### Output
 
-# E commerce
+The Lambda will return the result in JSON format or as a string, depending on the preference.
 
-crie uma tabela dynamo para um ecommerce onde as consultas de produtos serão realizadas por:
-- Nome do produto: O usuário pode não saber o nome do produto completo, talvez um contains ou algum algoritmo de busca?
-- Categoria
-- Subcategoria
-- Marca
+The response from the Lambda (output) follows the following format:
 
-A tabela deve aceitar ordenação por Nome e por Preço do produto
+```json
+{
+  "statusCode": 200,
+  "body": {
+    "date": "string",
+    "format": "string"
+  }
+}
+```
 
-Pensei nestes campos abaixo
+The `statusCode` field indicates the status of the response, and the `body` field contains an object with the attributes "date" and "format".
 
-Nome
-Descrição
-SKU
-Peso
-Status
-    - Desabilitado
-    - Habilitado
-Dados para frete
-    - Altura
-    - Largura
-    - Comprimento
-Flag para destaque
-Data de criação
-Data de atualização
-Cor
-Capacidade
-Metragem
-Marca
-Voltagem
-Tamanho
-Flag Frete Gratis
-Flag Black Friday
-Preço
-Custo
-Flag Promoção
-Data inicial promoção
-Data final promoção
-Preço Promocional
-Imagens
+| Status Code | Description                                   |
+|-------------|-----------------------------------------------|
+| 200         | Success - OK                                  |
+| 400         | Bad Request - Invalid Input                   |
+| 500         | Internal Server Error - Something went wrong  |
 
-Meta
-    - Title
-    - Description
-    - Keywords (Tags)
-    - Robots ()
+## Example Usage
 
-Controle de Estoque
-    -
+Assuming you have set up your Lambda function in AWS Lambda. You can invoke it using AWS CLI or any other available invocation method.
 
+### Invocation via AWS CLI
 
+```bash
+aws lambda invoke --function-name YourLambdaFunctionName --payload '{"date": "2024-03-04", "desired_format": "%Y-%m-%d %H:%M:%S", "return_format": "json"}' response.json
+```
 
+## Contribution
 
+Contributions are welcome! To contribute to this project, please follow these steps:
 
+1. Fork the project
+2. Create a branch with your feature (`git checkout -b feature/MyFeature`)
+3. Commit your changes (`git commit -am 'Adding a new feature'`)
+4. Push to the branch (`git push origin feature/MyFeature`)
+5. Create a new Pull Request
 
+## License
 
-
-
-
-
-Tabela de Produtos:
-
-Campos: ID, Nome, Descrição, SKU, Marca, Peso, Status, Dados para frete, Flag para destaque, Data de criação, Data de atualização, Cor, Imagens
-Índices Globais Secundários: NomeIndex (para consultas por nome do produto), MarcaIndex (para consultas por marca), PrecoIndex (para ordenação por preço)
-Tabela de Detalhes do Produto:
-
-Campos: ID (chave estrangeira para a tabela de Produtos), Capacidade, Metragem, Voltagem, Tamanho, Flag Frete Grátis, Flag Black Friday, Preço, Custo, Flag Promoção, Data inicial promoção, Data final promoção, Preço Promocional
-Índice Global Secundário: IDIndex (para consultar detalhes do produto por ID)
-Tabela de Categorias:
-
-Campos: ID, Nome da Categoria
-Índice Global Secundário: NomeCategoriaIndex (para consultas por nome da categoria)
-Tabela de Subcategorias:
-
-Campos: ID, Nome da Subcategoria, CategoriaID (chave estrangeira para a tabela de Categorias)
-Índice Global Secundário: NomeSubcategoriaIndex (para consultas por nome da subcategoria)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
