@@ -15,9 +15,9 @@ jobs:
       - name: Read config
         id: read-config
         run: |
-          echo "::set-output name=python-version::$(yq e '.lambda.env.runtime' config.yml)"
-          echo "::set-output name=requirements-file::$(yq e '.lambda.tests.requirements_file' config.yml)"
-          echo "::set-output name=base-path::$(yq e '.lambda.tests.directory' config.yml)"
+          echo "python-version=$(yq e '.lambda.env.runtime' config.yml)" >> $GITHUB_OUTPUT
+          echo "requirements-file=$(yq e '.lambda.tests.requirements_file' config.yml)" >> $GITHUB_OUTPUT
+          echo "base-path=$(yq e '.lambda.tests.directory' config.yml)" >> $GITHUB_OUTPUT
 
       - name: Checkout Repository
         uses: actions/checkout@v2
