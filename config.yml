@@ -1,0 +1,8 @@
+lambda:
+  env:
+    runtime: 3.11
+  tests:
+    directory: app
+    requirements_file: requirements-dev.txt
+
+

@@ -1,0 +1,45 @@
+name: Featue Workflow
+
+on:
+  push:
+    branches:
+      - 'feature/*'
+      - 'feature-*'
+      - 'feature_*'
+
+jobs:
+  build-and-test-and-open-pr:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+
+      - name: Read config
+        id: read-config
+        run: |
+          echo "python-version=$(yq e '.lambda.env.runtime' config.yml)" >> $GITHUB_OUTPUT
+          echo "requirements-file=$(yq e '.lambda.tests.requirements_file' config.yml)" >> $GITHUB_OUTPUT
+          echo "base-path=$(yq e '.lambda.tests.directory' config.yml)" >> $GITHUB_OUTPUT
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ steps.read-config.outputs.python-version }}
+
+      - name: Install Dependencies
+        run: |
+          cd ${{ steps.read-config.outputs.base-path }}
+          pip install pytest
+          pip install -r ${{ steps.read-config.outputs.requirements-file }}
+
+      - name: Run Unit Tests
+        run: pytest ${{ steps.read-config.outputs.base-path }}
+
+      - name: Open Pull Request to develop
+        run: gh pr create -B develop -H ${{ github.ref }} --title 'Automatically created Pull Request' --body 'Created by Github action'
+        env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Run Tests
+      #   uses: ./.github/actions/run-tests.yml
